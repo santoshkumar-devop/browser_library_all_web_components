@@ -47,7 +47,7 @@ Verify User Can Delete The Name is Text Field
 
 *** Keywords ***
 Textbox Suite Setup
-    New Browser    ${BROWSER}    headless=False
+    New Browser    ${BROWSER}
     New Page    ${URL}
 
 Textbox Test Setup
