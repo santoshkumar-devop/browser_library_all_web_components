@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  textbox_validation_job
+  textbox_validation_job:
 
   runs-on: ubuntu-latest
 
