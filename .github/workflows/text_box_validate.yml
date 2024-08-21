@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  textbox_validation_job:
+  textbox_validation_testcases_on_ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -56,6 +56,60 @@ jobs:
             output/results/log.html
             output/results/report.html
       
+      - name: Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+  
+  test-textbox_validation_testcases_on_windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.1.1
+        with:
+          python-version: '3.12'
+
+      - name: Cache Python packages
+        id: cache-python
+        uses: actions/cache@v3
+        with:
+          path: |
+            C:\Users\runneradmin\AppData\Local\pip\cache
+            venv
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Create virtual environment
+        run: |
+          python -m venv venv
+          venv\Scripts\activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          rfbrowser init
+        if: steps.cache-python.outputs.cache-hit != 'true'
+
+      - name: Run Robot Framework Tests
+        run: |
+          venv\Scripts\activate
+          robot --outputdir output/results example_test.robot
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: robot-test-results
+          path: |
+            output/results/output.xml
+            output/results/log.html
+            output/results/report.html
+
       - name: Upload Screenshots
         if: always()
         uses: actions/upload-artifact@v3
