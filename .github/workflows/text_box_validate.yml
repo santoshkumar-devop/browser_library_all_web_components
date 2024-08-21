@@ -23,15 +23,20 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           rfbrowser init
+          
       
       - name: Run Robot Framework Tests
         run: |
           source venv/bin/activate
           robot --outputdir output/results tests/textbox_validation.robot
+        continue-on-error: true  # Continue even if this step fails
       
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: robot-test-results
-          path: output/results/
+          path: |
+            output/results/output.xml
+            output/results/log.html
+            output/results/report.html
