@@ -56,20 +56,6 @@ jobs:
             output/results/log.html
             output/results/report.html
       
-
-      - name: Upload Each Screenshot Individually
-        if: always()
-        run: |
-          for file in screenshots/*; do
-            echo "Uploading $file"
-            gh api \
-              -X POST \
-              -H "Authorization: token ${{ secrets.WEB_COMPONENTS_TOKEN }}" \
-              -H "Content-Type: application/zip" \
-              "/repos/${{ github.repository }}/actions/artifacts" \
-              -F "file=@$file"
-          done
-      
       - name: Upload Screenshots
         if: always()
         uses: actions/upload-artifact@v3
