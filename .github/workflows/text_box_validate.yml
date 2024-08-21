@@ -23,6 +23,9 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           rfbrowser init
+      
+      - name: Ensure screenshots directory exists
+        run: mkdir -p screenshots
           
       
       - name: Run Robot Framework Tests

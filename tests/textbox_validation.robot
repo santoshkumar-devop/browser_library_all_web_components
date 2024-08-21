@@ -7,7 +7,7 @@ Suite Teardown    Textbox Suite Teardown
 *** Variables ***
 ${BROWSER}    chromium
 ${URL}    https://testautomationpractice.blogspot.com/
-${OUTPUTDIR}    screenshots
+${SCREENSHOTS_DIR}    screenshots
 
 ${expected_page_title}    Automation Testing Practice
 
@@ -47,7 +47,8 @@ Verify User Can Delete The Name is Text Field
 
 *** Keywords ***
 Textbox Suite Setup
-    Open Browser    ${URL}    ${BROWSER}
+    New Browser    ${BROWSER}    headless=False
+    New Page    ${URL}
 
 Textbox Test Setup
     Go To    ${URL}
@@ -66,7 +67,7 @@ User Enters Name
 Name is Entered Successfully
     ${entered_name}=    Get Text        ${TEXT_BOX_LOCATOR}
     Should Be Equal    ${entered_name}    ${TEST_USER_NAME}
-    Run Keyword And Ignore Error    Take Screenshot    ${OUTPUTDIR}/${TEST_USER_NAME}
+    Run Keyword And Ignore Error    Take Screenshot    ${SCREENSHOTS_DIR}/${TEST_USER_NAME}
 
 User Updates Name
     ${name}=    FakerLibrary.First Name
@@ -83,7 +84,7 @@ User Clears Name
 Name is Cleared Successfully
     ${entered_name}=    Get Text        ${TEXT_BOX_LOCATOR}
     Should Be Equal    ${entered_name}    ${EMPTY}
-    Run Keyword And Ignore Error    Take Screenshot    ${OUTPUTDIR}/cleared_name
+    Run Keyword And Ignore Error    Take Screenshot    ${SCREENSHOTS_DIR}/cleared_name
 
 Textbox Test Teardown
     Reload
