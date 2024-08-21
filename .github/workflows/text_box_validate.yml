@@ -98,7 +98,7 @@ jobs:
       - name: Run Robot Framework Tests
         run: |
           venv\Scripts\activate
-          robot --outputdir output/results example_test.robot
+          robot --outputdir output/results textbox_validation.robot
 
       - name: Upload Test Results
         if: always()
