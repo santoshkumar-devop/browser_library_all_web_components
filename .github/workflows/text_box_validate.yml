@@ -2,9 +2,15 @@ name: Textbox Validation
 
 on:
   workflow_dispatch:
+    inputs:
+      suite-name:
+        description: 'Name of the test suite to run'
+        required: true
+        default: 'textbox_validation'
+        type: string
 
 jobs:
-  textbox_validation_testcases_on_ubuntu:
+  test-ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,14 +49,14 @@ jobs:
       - name: Run Robot Framework Tests
         run: |
           source venv/bin/activate
-          robot --outputdir output/results tests/textbox_validation.robot
+          robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
         continue-on-error: true  # Continue even if this step fails
       
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: robot-test-results
+          name: robot-ubuntu-test-results
           path: |
             output/results/output.xml
             output/results/log.html
@@ -60,10 +66,15 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: screenshots
+          name: ubuntu-screenshots
           path: screenshots/
+      
+      - name: Post Links to Results
+        if: always()
+        run: |
+          echo "Test results are available in the [artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts) section of this workflow run."
   
-  test-textbox_validation_testcases_on_windows:
+  test-windows:
     runs-on: windows-latest
 
     steps:
@@ -98,13 +109,13 @@ jobs:
       - name: Run Robot Framework Tests
         run: |
           venv\Scripts\activate
-          robot --outputdir output/results tests/textbox_validation.robot
+          robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
 
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: robot-test-results
+          name: robot-windows-test-results
           path: |
             output/results/output.xml
             output/results/log.html
@@ -114,5 +125,21 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: screenshots
+          name: windows-screenshots
           path: screenshots/
+      
+      - name: Post Links to Results
+        if: always()
+        run: |
+          echo "Test results are available in the [artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts) section of this workflow run."
+  
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [test-ubuntu, test-windows]
+    steps:
+      - name: Cleanup old job results
+        run: |
+          echo "Cleaning up old job results..."
+          # Implement your cleanup logic here if needed
+    
