@@ -27,9 +27,10 @@ jobs:
       - name: Run Robot Framework Tests
         run: |
           source venv/bin/activate
-          robot --outputdir output/results example_test.robot
+          robot --outputdir output/results tests/textbox_validation.robot
       
       - name: Upload Test Results
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: robot-test-results
