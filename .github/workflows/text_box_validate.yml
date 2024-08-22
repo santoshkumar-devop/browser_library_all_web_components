@@ -72,7 +72,7 @@ jobs:
         run: |
           venv/Scripts/activate
           robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
-        continue-on-error: false  # Continue even if this step fails
+        continue-on-error: false  # don't Continue if the testcase fails
       
       - name: Upload Test Results
         if: always()
@@ -91,11 +91,6 @@ jobs:
           name: ubuntu-screenshots
           path: screenshots/
       
-      - name: Post Links to Results
-        if: always()
-        run: |
-          echo "Test results are available in the [artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts) section of this workflow run."
-  
   # test-windows:
   #   runs-on: windows-latest
 
