@@ -36,7 +36,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       
-      - name: Create virtual environment on Ubuntu machine
+      - name: Create virtual environment on Linux machine
         if: runner.os == 'Linux' 
         run: |
           python -m venv venv
@@ -60,9 +60,17 @@ jobs:
         run: mkdir -p screenshots
           
       
-      - name: Run Robot Framework Tests
+      - name: Run Robot Framework Tests on Linux Machine
+        if: runner.os == 'Linux' 
         run: |
           source venv/bin/activate
+          robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
+        continue-on-error: false  # Continue even if this step fails
+      
+      - name: Run Robot Framework Tests on Windows Machine
+        if: runner.os == 'Windows' 
+        run: |
+          venv/bin/activate
           robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
         continue-on-error: false  # Continue even if this step fails
       
