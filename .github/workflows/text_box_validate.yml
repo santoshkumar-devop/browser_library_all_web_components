@@ -70,7 +70,7 @@ jobs:
       - name: Run Robot Framework Tests on Windows Machine
         if: runner.os == 'Windows' 
         run: |
-          venv/bin/activate
+          venv/Scripts/activate
           robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
         continue-on-error: false  # Continue even if this step fails
       
