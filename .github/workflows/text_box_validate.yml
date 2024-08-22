@@ -10,8 +10,11 @@ on:
         type: string
 
 jobs:
-  test-ubuntu:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout Code
@@ -50,13 +53,13 @@ jobs:
         run: |
           source venv/bin/activate
           robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
-        continue-on-error: true  # Continue even if this step fails
+        continue-on-error: false  # Continue even if this step fails
       
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: robot-ubuntu-test-results
+          name: robot-${{ matrix.os }}-test-results
           path: |
             output/results/output.xml
             output/results/log.html
@@ -74,72 +77,62 @@ jobs:
         run: |
           echo "Test results are available in the [artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts) section of this workflow run."
   
-  test-windows:
-    runs-on: windows-latest
+  # test-windows:
+  #   runs-on: windows-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5.1.1
-        with:
-          python-version: '3.12'
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5.1.1
+  #       with:
+  #         python-version: '3.12'
 
-      - name: Cache Python packages
-        id: cache-python
-        uses: actions/cache@v3
-        with:
-          path: |
-            C:\Users\runneradmin\AppData\Local\pip\cache
-            venv
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+  #     - name: Cache Python packages
+  #       id: cache-python
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: |
+  #           C:\Users\runneradmin\AppData\Local\pip\cache
+  #           venv
+  #         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-pip-
 
-      - name: Create virtual environment
-        run: |
-          python -m venv venv
-          venv\Scripts\activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          rfbrowser init
-        if: steps.cache-python.outputs.cache-hit != 'true'
+  #     - name: Create virtual environment
+  #       run: |
+  #         python -m venv venv
+  #         venv\Scripts\activate
+  #         pip install --upgrade pip
+  #         pip install -r requirements.txt
+  #         rfbrowser init
+  #       if: steps.cache-python.outputs.cache-hit != 'true'
 
-      - name: Run Robot Framework Tests
-        run: |
-          venv\Scripts\activate
-          robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
+  #     - name: Run Robot Framework Tests
+  #       run: |
+  #         venv\Scripts\activate
+  #         robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
 
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: robot-windows-test-results
-          path: |
-            output/results/output.xml
-            output/results/log.html
-            output/results/report.html
+  #     - name: Upload Test Results
+  #       if: always()
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: robot-windows-test-results
+  #         path: |
+  #           output/results/output.xml
+  #           output/results/log.html
+  #           output/results/report.html
 
-      - name: Upload Screenshots
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows-screenshots
-          path: screenshots/
+  #     - name: Upload Screenshots
+  #       if: always()
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: windows-screenshots
+  #         path: screenshots/
       
-      - name: Post Links to Results
-        if: always()
-        run: |
-          echo "Test results are available in the [artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts) section of this workflow run."
-  
-
-  cleanup:
-    runs-on: ubuntu-latest
-    needs: [test-ubuntu, test-windows]
-    steps:
-      - name: Cleanup old job results
-        run: |
-          echo "Cleaning up old job results..."
-          # Implement your cleanup logic here if needed
+  #     - name: Post Links to Results
+  #       if: always()
+  #       run: |
+  #         echo "Test results are available in the [artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts) section of this workflow run."
     
