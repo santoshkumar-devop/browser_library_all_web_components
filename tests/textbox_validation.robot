@@ -13,7 +13,7 @@ ${expected_page_title}    Automation Testing Practice
 
 # Locators
 ${LABEL_LOCATOR}        //label[normalize-space()="Name:"]
-${TEXT_BOX_LOCATOR}    //input[@id="name"]
+${TEXT_BOX_LOCATOR}    //input[@id="nam"]
 
 *** Test Cases ***
 Verify User Can Add The Name in Text Field
