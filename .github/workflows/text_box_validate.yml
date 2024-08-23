@@ -84,6 +84,12 @@ jobs:
             output/results/log.html
             output/results/report.html
       
+      - name: Upload log.html
+        uses: actions/upload-artifact@v3
+        with:
+          name: log.html
+          path: output/results/log.html
+      
       - name: Upload Screenshots
         if: always()
         uses: actions/upload-artifact@v3
