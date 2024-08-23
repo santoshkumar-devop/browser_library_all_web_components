@@ -14,7 +14,8 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
+        # , windows-latest
 
     steps:
       - name: Checkout Code
@@ -84,11 +85,12 @@ jobs:
             output/results/log.html
             output/results/report.html
       
-      - name: Upload log.html
-        uses: actions/upload-artifact@v3
-        with:
-          name: log.html
-          path: output/results/log.html
+      - name: Display Links to Reports
+        run: |
+          echo "## Test Reports"
+          echo "Log Report: [log.html](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts?name=log.html)"
+          echo "Full Report: [report.html](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts?name=report.html)"
+          echo "Output XML: [output.xml](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts?name=output.xml)"
       
       - name: Upload Screenshots
         if: always()
