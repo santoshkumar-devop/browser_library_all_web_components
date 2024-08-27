@@ -1,4 +1,4 @@
-name: All Web Components
+name: Test Suite Executed
 
 on:
   workflow_dispatch:
