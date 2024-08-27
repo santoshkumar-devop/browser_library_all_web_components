@@ -6,8 +6,12 @@ on:
       suite-name:
         description: 'Name of the test suite to run'
         required: true
-        default: 'textbox_validation'
-        type: string
+        type: choice
+        options:
+          - textbox_validation
+          - radioButton_validation
+          - checkbox_validation
+
 
 jobs:
   test:
