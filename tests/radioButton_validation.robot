@@ -21,14 +21,16 @@ Verify User Can Select Radio Button
     [Tags]    Testcase_1
     [Setup]    Radio Button Test Setup
     Given User Is On The Blog Page
-    When User Selects Radio Button
-    Then Radio Button is Selected Successfully
+    When User Selects Male Radio Option
+    Then Male Radio Option is Selected Successfully
+    When User Selects Female Radio Option
+    Then Female Radio Option is Selected Successfully
     [Teardown]    Radio Button Test Teardown
 
 *** Keywords ***
 Radio Button Suite Setup
-    New Browser    ${BROWSER}
-    New Page
+    New Browser    ${BROWSER}    headless=False    slowMo=2
+    New Page    ${URL}
 
 Radio Button Test Setup
     Go To    ${URL}
@@ -37,16 +39,30 @@ User Is On The Blog Page
     ${page_title}=    Get Title
     Should Be Equal     ${page_title}   ${expected_page_title}
 
-User Selects Radio Button
+User Selects Male Radio Option
    Scroll To    ${MALE_LABEL}
    Wait For Elements State    ${MALE_LABEL}    visible
    Click    ${MALE_LOCATOR}
 
-Radio Button is Selected Successfully
+User Selects Female Radio Option
+   Scroll To    ${FEMALE_LABEL}
+   Wait For Elements State    ${FEMALE_LABEL}    visible
+   Click    ${FEMALE_LOCATOR}
+
+Male Radio Option is Selected Successfully
     ${selected}=    Get Property        ${MALE_LOCATOR}    checked
     Should Be True    '${selected}' == 'True'
 
     ${not_selected}=    Get Property        ${FEMALE_LOCATOR}    checked
+    Should Be True    '${not_selected}' == 'False'
+
+    Take Screenshot    Radio Button Selected
+
+Female Radio Option is Selected Successfully
+    ${selected}=    Get Property        ${FEMALE_LOCATOR}    checked
+    Should Be True    '${selected}' == 'True'
+
+    ${not_selected}=    Get Property        ${MALE_LOCATOR}    checked
     Should Be True    '${not_selected}' == 'False'
 
     Take Screenshot    Radio Button Selected
