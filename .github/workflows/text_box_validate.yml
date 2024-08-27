@@ -15,7 +15,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        # , windows-latest
 
     steps:
       - name: Checkout Code
@@ -45,35 +44,13 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           rfbrowser init
-        #if: steps.cache-python.outputs.cache-hit != 'true'
-      
-      - name: Create virtual environment on Windows machine
-        if: runner.os == 'Windows' 
-        run: |
-          python -m venv venv
-          venv/Scripts/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          rfbrowser init
-        #if: steps.cache-python.outputs.cache-hit != 'true'
-      
-      - name: Ensure screenshots directory exists
-        run: mkdir -p screenshots
           
-      
       - name: Run Robot Framework Tests on Linux Machine
         if: runner.os == 'Linux' 
         run: |
           source venv/bin/activate
-          robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
+          robot --outputdir results "tests/${{ github.event.inputs.suite-name }}.robot"
         continue-on-error: false  # Continue even if this step fails
-      
-      - name: Run Robot Framework Tests on Windows Machine
-        if: runner.os == 'Windows' 
-        run: |
-          venv/Scripts/activate
-          robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
-        continue-on-error: false  # don't Continue if the testcase fails
       
       - name: Upload Test Results
         if: always()
@@ -81,80 +58,4 @@ jobs:
         with:
           name: robot-${{ matrix.os }}-test-results
           path: |
-            output/results/output.xml
-            output/results/log.html
-            output/results/report.html
-      
-      - name: Display Links to Reports
-        run: |
-          echo "## Test Reports"
-          echo "Log Report: [log.html](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts?name=log.html)"
-          echo "Full Report: [report.html](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts?name=report.html)"
-          echo "Output XML: [output.xml](https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts?name=output.xml)"
-      
-      - name: Upload Screenshots
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu-screenshots
-          path: screenshots/
-      
-  # test-windows:
-  #   runs-on: windows-latest
-
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5.1.1
-  #       with:
-  #         python-version: '3.12'
-
-  #     - name: Cache Python packages
-  #       id: cache-python
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: |
-  #           C:\Users\runneradmin\AppData\Local\pip\cache
-  #           venv
-  #         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-pip-
-
-  #     - name: Create virtual environment
-  #       run: |
-  #         python -m venv venv
-  #         venv\Scripts\activate
-  #         pip install --upgrade pip
-  #         pip install -r requirements.txt
-  #         rfbrowser init
-  #       if: steps.cache-python.outputs.cache-hit != 'true'
-
-  #     - name: Run Robot Framework Tests
-  #       run: |
-  #         venv\Scripts\activate
-  #         robot --outputdir output/results "tests/${{ github.event.inputs.suite-name }}.robot"
-
-  #     - name: Upload Test Results
-  #       if: always()
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: robot-windows-test-results
-  #         path: |
-  #           output/results/output.xml
-  #           output/results/log.html
-  #           output/results/report.html
-
-  #     - name: Upload Screenshots
-  #       if: always()
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: windows-screenshots
-  #         path: screenshots/
-      
-  #     - name: Post Links to Results
-  #       if: always()
-  #       run: |
-  #         echo "Test results are available in the [artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts) section of this workflow run."
-    
+            results/*
