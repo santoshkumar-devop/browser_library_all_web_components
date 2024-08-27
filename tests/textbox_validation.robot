@@ -7,7 +7,6 @@ Suite Teardown    Textbox Suite Teardown
 *** Variables ***
 ${BROWSER}    chromium
 ${URL}    https://testautomationpractice.blogspot.com/
-${SCREENSHOTS_DIR}    screenshots
 
 ${expected_page_title}    Automation Testing Practice
 
@@ -67,7 +66,7 @@ User Enters Name
 Name is Entered Successfully
     ${entered_name}=    Get Text        ${TEXT_BOX_LOCATOR}
     Should Be Equal    ${entered_name}    ${TEST_USER_NAME}
-    Take Screenshot    ${SCREENSHOTS_DIR}/${TEST_USER_NAME}
+    Take Screenshot    ${TEST_USER_NAME}
 
 User Updates Name
     ${name}=    FakerLibrary.First Name
@@ -84,7 +83,7 @@ User Clears Name
 Name is Cleared Successfully
     ${entered_name}=    Get Text        ${TEXT_BOX_LOCATOR}
     Should Be Equal    ${entered_name}    ${EMPTY}
-    Take Screenshot    ${SCREENSHOTS_DIR}/cleared_name
+    Take Screenshot    cleared_name
 
 Textbox Test Teardown
     Reload
