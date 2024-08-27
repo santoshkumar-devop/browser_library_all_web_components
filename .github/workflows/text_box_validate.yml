@@ -1,4 +1,4 @@
-name: Textbox Validation
+name: All Web Components
 
 on:
   workflow_dispatch:
